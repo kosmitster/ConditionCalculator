@@ -12,18 +12,14 @@ namespace ConditionCalculator.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Variant
+    public partial class Relationship
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Variant()
-        {
-            this.ContractConditions = new HashSet<ContractCondition>();
-        }
-    
         public int Id { get; set; }
-        public string Name { get; set; }
+        public int ContractItemId { get; set; }
+        public int TaskId { get; set; }
+        public bool IsTrue { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ContractCondition> ContractConditions { get; set; }
+        public virtual ContractItem ContractItem { get; set; }
+        public virtual TypeTask TypeTask { get; set; }
     }
 }

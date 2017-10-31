@@ -34,27 +34,10 @@ namespace UnitTest
         }
 
         [Test]
-        public void CreateVariantTest()
-        {
-            IRepository repository = new Repository();
-            repository.CreateVariant(new VariantDto
-            {
-                Id = 1,
-                Name = "AND"
-            });
-            repository.CreateVariant(new VariantDto
-            {
-                Id = 2,
-                Name = "OR"
-            });
-            Assert.IsTrue(repository.GetVariants().Any());
-        }
-
-        [Test]
         public void CreateTypeTaskTest()
         {
             IRepository repository = new Repository();
-            repository.AddTypeTask(new TypeTaskDto
+            repository.CreateTypeTask(new TypeTaskDto
             {
                 Id = 1,
                 Name = "CODE",
@@ -67,7 +50,7 @@ namespace UnitTest
         public void CreateTypeValueTest()
         {
             IRepository repository = new Repository();
-            repository.AddTypeValue(new TypeValueDto
+            repository.CreateTypeValue(new TypeValueDto
             {
                 Id = 1,
                 Name = "Fix"
@@ -102,14 +85,14 @@ namespace UnitTest
             var operandTaskUid = Guid.Parse("771152b0-480f-41c8-a395-fd7f830081c7");
             IRepository repository = new Repository();
 
-            repository.AddTypeTask(new TypeTaskDto
+            repository.CreateTypeTask(new TypeTaskDto
             {
                 Id = 6,
                 Name = "CODE",
                 Priority = 1
             });
 
-            repository.AddOperandTask(new OperandTaskDto
+            repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = operandTaskUid,
                 Type = 6,
@@ -137,12 +120,12 @@ namespace UnitTest
                 Type = Convert.ToChar("Р")
             });
 
-            repository.AddTypeValue(new TypeValueDto
+            repository.CreateTypeValue(new TypeValueDto
             {
                 Id = 1,
                 Name = "Fix"
             });
-            repository.AddOperandValue(new OperandValueDto
+            repository.CreateOperandValue(new OperandValueDto
             {
                 Key = Guid.NewGuid(),
                 Type = 1,
@@ -161,126 +144,138 @@ namespace UnitTest
             var operandTwoUid = Guid.Parse("0e69c042-1a9d-4f7d-8444-ca09ccc73890");
             IRepository repository = new Repository();
 
+            /*CREATE Договор*/
             repository.CreateContract(new ContractDto
             {
                 Uid = contractUid,
                 Name = "Договор №1"
             });
+            /*CREATE Строка документа*/
             repository.CreateContractItem(new ContractItemDto
             {
                 Id = 1,
                 ContractUid = contractUid,
                 Type = Convert.ToChar("Р")
             });
-            repository.AddTypeTask(new TypeTaskDto
+            /*CREATE Типы*/
+            repository.CreateTypeTask(new TypeTaskDto
             {
                 Id = 1,
                 Name = "CODE",
                 Priority = 1
             });
-            repository.AddOperandTask(new OperandTaskDto
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 2,
+                Name = "BRAND",
+                Priority = 1
+            });
+
+            /*CREATE Тип = CODE*/
+            repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = operandOneUid,
                 Type = 1,
                 Value = "TestCode"
             });
-            repository.AddOperandTask(new OperandTaskDto
+            repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = operandTwoUid,
                 Type = 1,
                 Value = "AnotherTestCode"
             });
-            repository.CreateVariant(new VariantDto
+
+            /*CREATE отношения*/
+            repository.CreateRelationship(new RelationshipDto
             {
                 Id = 1,
-                Name = "AND"
-            });
-            repository.CreateVariant(new VariantDto
-            {
-                Id = 2,
-                Name = "OR"
+                ContractItemId = 1,
+                TaskId = 1,
+                IsTrue = true
             });
 
-            repository.CreateContractCondition(new ContractConditionDto
-            {
-                Id = 1,
-                ContractorItemId = 1,
-                Do = 2,
-                IsTrueOperantOne = true,
-                OperantOne = operandOneUid,
-                IsTrueOperantTwo = true,
-                OperantTwo = operandTwoUid
-            });
-
-            Assert.IsTrue(repository.GetContractConditions().Any());
+            Assert.IsTrue(repository.GetRelationships().Any());
         }
 
         [Test]
         public void CalculationTest()
         {
             Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
-            Guid operandOneUid = Guid.Parse("828145e9-8cff-4642-af33-b95bf1fef65d");
-            Guid operandTwoUid = Guid.Parse("0e69c042-1a9d-4f7d-8444-ca09ccc73890");
             Guid operandValueUid = Guid.Parse("0fd6a38f-2eb3-4a52-960a-25f3d52bcb2b");
             IRepository repository = new Repository();
 
+            /*CREATE Договор*/
             repository.CreateContract(new ContractDto
             {
                 Uid = contractUid,
                 Name = "Договор №1"
             });
+            /*CREATE Строка документа*/
             repository.CreateContractItem(new ContractItemDto
             {
                 Id = 1,
                 ContractUid = contractUid,
                 Type = Convert.ToChar("Р")
             });
-            repository.AddTypeTask(new TypeTaskDto
+            /*CREATE Типы*/
+            repository.CreateTypeTask(new TypeTaskDto
             {
                 Id = 1,
-                Name = "CODE",
+                Name = "ISWARRANTY",
                 Priority = 1
             });
-            repository.AddOperandTask(new OperandTaskDto
-            {
-                Key = operandOneUid,
-                Type = 1,
-                Value = "TestCode"
-            });
-            repository.AddOperandTask(new OperandTaskDto
-            {
-                Key = operandTwoUid,
-                Type = 1,
-                Value = "AnotherTestCode"
-            });
-            repository.CreateVariant(new VariantDto
-            {
-                Id = 1,
-                Name = "AND"
-            });
-            repository.CreateVariant(new VariantDto
+            repository.CreateTypeTask(new TypeTaskDto
             {
                 Id = 2,
-                Name = "OR"
+                Name = "BRAND",
+                Priority = 1
             });
 
-            repository.CreateContractCondition(new ContractConditionDto
+            /*CREATE Тип - ISWARRANTY*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 1,
+                Value = "true"
+            });
+
+            /*CREATE Тип - BRAND*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 2,
+                Value = "MAZDA"
+            });
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 2,
+                Value = "OPEL"
+            });
+
+            /*CREATE отношения типов*/
+            repository.CreateRelationship(new RelationshipDto
             {
                 Id = 1,
-                ContractorItemId = 1,
-                Do = 2,
-                IsTrueOperantOne = true,
-                OperantOne = operandOneUid,
-                IsTrueOperantTwo = true,
-                OperantTwo = operandTwoUid
+                ContractItemId = 1,
+                TaskId = 1,
+                IsTrue = true
+            });
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 2,
+                ContractItemId = 1,
+                TaskId = 2,
+                IsTrue = true
             });
 
-            repository.AddTypeValue(new TypeValueDto
+            /*CREATE результат операции*/
+            repository.CreateTypeValue(new TypeValueDto
             {
                 Id = 1,
                 Name = "Fix"
             });
-            repository.AddOperandValue(new OperandValueDto
+            repository.CreateOperandValue(new OperandValueDto
             {
                 Key = operandValueUid,
                 Type = 1,
@@ -296,7 +291,8 @@ namespace UnitTest
                     Uid = calculatedValueUid,
                     Conditions = new List<KeyValuePair<string, string>>
                     {
-                        new KeyValuePair<string, string>("Code", "AnotherTestCode")  
+                        new KeyValuePair<string, string>("ISWARRANTY", "true"),
+                        new KeyValuePair<string, string>("BRAND", "MAZDA")
                     },
                     Costs = new List<KeyValuePair<string, decimal>>
                     {
@@ -306,7 +302,8 @@ namespace UnitTest
                 }
             });
 
-            Assert.IsTrue(results.Exists(s => s.Uid == calculatedValueUid));
+            Assert.IsTrue(results.Single(s => s.Uid == calculatedValueUid).Result == 1500);
+            //Assert.IsTrue(results.Exists(s => s.Uid == calculatedValueUid));
         }
     }
 }

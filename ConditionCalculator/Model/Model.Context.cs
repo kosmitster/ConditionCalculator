@@ -26,12 +26,11 @@ namespace ConditionCalculator.Model
         }
     
         public virtual DbSet<Contract> Contracts { get; set; }
-        public virtual DbSet<ContractCondition> ContractConditions { get; set; }
         public virtual DbSet<ContractItem> ContractItems { get; set; }
         public virtual DbSet<OperandTask> OperandTasks { get; set; }
         public virtual DbSet<OperandValue> OperandValues { get; set; }
+        public virtual DbSet<Relationship> Relationships { get; set; }
         public virtual DbSet<TypeTask> TypeTasks { get; set; }
         public virtual DbSet<TypeValue> TypeValues { get; set; }
-        public virtual DbSet<Variant> Variants { get; set; }
     }
 }

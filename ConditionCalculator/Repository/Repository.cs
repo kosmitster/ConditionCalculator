@@ -22,17 +22,7 @@ namespace ConditionCalculator.Repository
             }
         }
 
-        public void AddContractItem(ContractItemDto contractItemDto)
-        {
-            var contractItem = AutoMapper.Mapper.Map<ContractItemDto, ContractItem>(contractItemDto);
-            using (var context = new ConditionCalculatorEntities())
-            {
-                context.ContractItems.Add(contractItem);
-                context.SaveChanges();
-            }
-        }
-
-        public void AddOperandTask(OperandTaskDto operandTaskDto)
+        public void CreateOperandTask(OperandTaskDto operandTaskDto)
         {
             var operandTask = AutoMapper.Mapper.Map<OperandTaskDto, OperandTask>(operandTaskDto);
             using (var context = new ConditionCalculatorEntities())
@@ -42,7 +32,7 @@ namespace ConditionCalculator.Repository
             }
         }
 
-        public void AddOperandValue(OperandValueDto operandValueDto)
+        public void CreateOperandValue(OperandValueDto operandValueDto)
         {
             var operandValue = AutoMapper.Mapper.Map<OperandValueDto, OperandValue>(operandValueDto);
             using (var context = new ConditionCalculatorEntities())
@@ -52,17 +42,7 @@ namespace ConditionCalculator.Repository
             }
         }
 
-        public void CreateVariant(VariantDto variantDto)
-        {
-            var variant = AutoMapper.Mapper.Map<VariantDto, Variant>(variantDto);
-            using (var context = new ConditionCalculatorEntities())
-            {
-                context.Variants.Add(variant);
-                context.SaveChanges();
-            }
-        }
-
-        public void AddTypeTask(TypeTaskDto typeTaskDto)
+        public void CreateTypeTask(TypeTaskDto typeTaskDto)
         {
             var typeTask = AutoMapper.Mapper.Map<TypeTaskDto, TypeTask>(typeTaskDto);
             using (var context = new ConditionCalculatorEntities())
@@ -72,7 +52,7 @@ namespace ConditionCalculator.Repository
             }
         }
 
-        public void AddTypeValue(TypeValueDto typeValueDto)
+        public void CreateTypeValue(TypeValueDto typeValueDto)
         {
             var typeValue = AutoMapper.Mapper.Map<TypeValueDto, TypeValue>(typeValueDto);
             using (var context = new ConditionCalculatorEntities())
@@ -92,13 +72,12 @@ namespace ConditionCalculator.Repository
             }
         }
 
-        public void CreateContractCondition(ContractConditionDto contractConditionDto)
+        public void CreateRelationship(RelationshipDto relationshipDto)
         {
-            var contractCondition =
-                AutoMapper.Mapper.Map<ContractConditionDto, ContractCondition>(contractConditionDto);
+            var relationshipType = AutoMapper.Mapper.Map<RelationshipDto, Relationship>(relationshipDto);
             using (var context = new ConditionCalculatorEntities())
             {
-                context.ContractConditions.Add(contractCondition);
+                context.Relationships.Add(relationshipType);
                 context.SaveChanges();
             }
         }
@@ -107,7 +86,21 @@ namespace ConditionCalculator.Repository
 
         private static ResponseSchemeDto Calculation(RequestSchemaDto requestSchemaDto)
         {
-            
+            using (var context = new ConditionCalculatorEntities())
+            {
+                foreach (var contractItem in context.Contracts.First().SortByWeight())
+                {
+                    if (contractItem.IsTrue(requestSchemaDto))
+                    {
+                        return new ResponseSchemeDto
+                        {
+                            Uid = requestSchemaDto.Uid,
+                            
+                        };
+                    }
+
+                }
+            }
 
             if (requestSchemaDto.Costs.Exists(s => s.Key == "Retail"))
             {
@@ -125,12 +118,11 @@ namespace ConditionCalculator.Repository
         {
             using (var context = new ConditionCalculatorEntities())
             {
-                context.ContractConditions.RemoveRange(context.ContractConditions.AsEnumerable());
+                context.Relationships.RemoveRange(context.Relationships.AsEnumerable());
                 context.OperandTasks.RemoveRange(context.OperandTasks.AsEnumerable());
                 context.OperandValues.RemoveRange(context.OperandValues.AsEnumerable());
                 context.TypeTasks.RemoveRange(context.TypeTasks.AsEnumerable());
                 context.TypeValues.RemoveRange(context.TypeValues.AsEnumerable());
-                context.Variants.RemoveRange(context.Variants.AsEnumerable());
                 context.ContractItems.RemoveRange(context.ContractItems.AsEnumerable());
                 context.Contracts.RemoveRange(context.Contracts.AsEnumerable());
                 context.SaveChanges();
@@ -143,16 +135,6 @@ namespace ConditionCalculator.Repository
             using (var context = new ConditionCalculatorEntities())
             {
                 result = AutoMapper.Mapper.Map<List<Contract>, List<ContractDto>>(context.Contracts.ToList());
-            }
-            return result;
-        }
-
-        public List<VariantDto> GetVariants()
-        {
-            List<VariantDto> result;
-            using (var context = new ConditionCalculatorEntities())
-            {
-                result = AutoMapper.Mapper.Map<List<Variant>, List<VariantDto>>(context.Variants.ToList());
             }
             return result;
         }
@@ -211,16 +193,15 @@ namespace ConditionCalculator.Repository
             return result;
         }
 
-        public List<ContractConditionDto> GetContractConditions()
+        public List<RelationshipDto> GetRelationships()
         {
-            List<ContractConditionDto> result;
+            List<RelationshipDto> result;
             using (var context = new ConditionCalculatorEntities())
             {
                 result =
-                    AutoMapper.Mapper.Map<List<ContractCondition>, List<ContractConditionDto>>(context.ContractConditions.ToList());
+                    AutoMapper.Mapper.Map<List<Relationship>, List<RelationshipDto>>(context.Relationships.ToList());
             }
             return result;
-
         }
     }
 }

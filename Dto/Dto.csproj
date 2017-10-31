@@ -40,17 +40,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ContractConditionDto.cs" />
     <Compile Include="ContractDto.cs" />
     <Compile Include="ContractItemDto.cs" />
     <Compile Include="OperandTaskDto.cs" />
     <Compile Include="OperandValueDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RelationshipDto.cs" />
     <Compile Include="RequestSchemaDto.cs" />
     <Compile Include="ResponseSchemeDto.cs" />
     <Compile Include="TypeTaskDto.cs" />
     <Compile Include="TypeValueDto.cs" />
-    <Compile Include="VariantDto.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

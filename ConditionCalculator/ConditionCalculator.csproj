@@ -67,10 +67,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CfgMapper.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="Model\Contract.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\ContractCondition.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\ContractItem.cs">
@@ -97,13 +95,13 @@
     <Compile Include="Model\OperandValue.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\Relationship.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\TypeTask.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\TypeValue.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Model\Variant.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

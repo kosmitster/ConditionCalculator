@@ -7,67 +7,41 @@ namespace ConditionCalculator
 {
     public static class Helper
     {
-        public static int GetWeight(this ContractItem contractItem)
-        {
-            var x = 0;
-            foreach (var condition in contractItem.ContractConditions)
-            {
-                x = x + condition.OperandOne.TypeTask.Priority;
-                x = x + condition.OperandTwo.TypeTask.Priority;
-            }
-            return x;
-        }
+        /// <summary>
+        /// Сортируй условие договора по весу каждого члена
+        /// </summary>
+        /// <param name="contractItem"></param>
+        /// <returns></returns>
+        public static int GetWeight(this ContractItem contractItem) => contractItem.Relationships.Aggregate(0,
+            (current, condition) => current + condition.TypeTask.Priority);
 
-        public static List<ContractItem> SortByWeight(this Contract contract)
-        {
-            return contract.ContractItems.OrderBy(s => s.GetWeight()).ToList();
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="contract"></param>
+        /// <returns></returns>
+        public static List<ContractItem> SortByWeight(this Contract contract) => contract.ContractItems
+            .OrderBy(s => s.GetWeight())
+            .ToList();
+
 
         /// <summary>
         /// Верно ли условие?
         /// </summary>
         /// <param name="contractItem">условие</param>
         /// <param name="requestSchemaDto">запрашиваемые данные</param>
-        public static bool IsTrue(this ContractItem contractItem, RequestSchemaDto requestSchemaDto)            
-        {
-            
+        public static bool IsTrue(this ContractItem contractItem, RequestSchemaDto requestSchemaDto) =>
+            contractItem.Relationships.OrderBy(s => s.Id)
+                .Select(relationship => relationship.IsTrue
+                    ? relationship.TypeTask.IsTrue(requestSchemaDto)
+                    : !relationship.TypeTask.IsTrue(requestSchemaDto))
+                .All(allIsTrue => allIsTrue);
 
-
-            foreach (var contractCondition in contractItem.ContractConditions.OrderBy(s => s.Id))
-            {
-                
-
-                //В зависимости от логического условия 
-                switch (contractCondition.Do)
-                {
-                    // И
-                    case 1:
-                        if (contractCondition.OperandOne.IsTrue(requestSchemaDto) &&
-                            contractCondition.OperandTwo.IsTrue(requestSchemaDto))
-                        {
-                            return true;
-                        }
-                        break;
-                    // ИЛИ
-                    case 2:
-                        if (contractCondition.OperandOne.IsTrue(requestSchemaDto) ||
-                            contractCondition.OperandTwo.IsTrue(requestSchemaDto))
-                        {
-                            return true;
-                        }
-                        break;
-                }
-            }
-            return true;
-        }
-
-        public static bool IsTrue(this OperandTask operandTask, RequestSchemaDto requestSchemaDto)
-        {
-            var result = requestSchemaDto.Conditions.Exists(s => s.Key.ToUpper() == operandTask.TypeTask.Name.ToUpper())
-                   && requestSchemaDto
-                       .Conditions.Single(s => s.Key.ToUpper() == operandTask.TypeTask.Name.ToUpper())
-                       .Value == operandTask.Value;
-            return result;
-        }
+        public static bool IsTrue(this TypeTask typeTask, RequestSchemaDto requestSchemaDto) =>
+            requestSchemaDto.Conditions.Exists(s => s.Key.ToUpper() == typeTask.Name.ToUpper())
+            && typeTask.OperandTasks.Any(x => x.Value == requestSchemaDto
+                                                  .Conditions
+                                                  .Single(s => s.Key.ToUpper() == typeTask.Name.ToUpper())
+                                                  .Value);
     }
 }

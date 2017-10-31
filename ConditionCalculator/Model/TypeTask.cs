@@ -18,6 +18,7 @@ namespace ConditionCalculator.Model
         public TypeTask()
         {
             this.OperandTasks = new HashSet<OperandTask>();
+            this.Relationships = new HashSet<Relationship>();
         }
     
         public int Id { get; set; }
@@ -26,5 +27,7 @@ namespace ConditionCalculator.Model
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OperandTask> OperandTasks { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Relationship> Relationships { get; set; }
     }
 }
