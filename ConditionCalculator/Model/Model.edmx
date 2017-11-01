@@ -19,6 +19,9 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="ContractUid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TypeValueId" Type="int" Nullable="false" />
+          <Property Name="Factor" Type="decimal" Precision="10" Scale="7" Nullable="false" />
+          <Property Name="FixValue" Type="decimal" Precision="15" Scale="2" />
         </EntityType>
         <EntityType Name="OperandTask">
           <Key>
@@ -27,15 +30,6 @@
           <Property Name="Key" Type="uniqueidentifier" Nullable="false" />
           <Property Name="Type" Type="int" Nullable="false" />
           <Property Name="Value" Type="varchar" MaxLength="255" Nullable="false" />
-        </EntityType>
-        <EntityType Name="OperandValue">
-          <Key>
-            <PropertyRef Name="Key" />
-          </Key>
-          <Property Name="Key" Type="uniqueidentifier" Nullable="false" />
-          <Property Name="Type" Type="int" Nullable="false" />
-          <Property Name="Value" Type="decimal" Precision="15" Scale="2" Nullable="false" />
-          <Property Name="ContractItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Relationship">
           <Key>
@@ -61,7 +55,7 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <Association Name="FK_ContractItem_Contract1">
+        <Association Name="FK_ContractItem_Contract">
           <End Role="Contract" Type="Self.Contract" Multiplicity="1" />
           <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="*" />
           <ReferentialConstraint>
@@ -73,6 +67,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ContractItem_TypeValue">
+          <End Role="TypeValue" Type="Self.TypeValue" Multiplicity="1" />
+          <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeValue">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ContractItem">
+              <PropertyRef Name="TypeValueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Operand_Type">
           <End Role="TypeTask" Type="Self.TypeTask" Multiplicity="1" />
           <End Role="OperandTask" Type="Self.OperandTask" Multiplicity="*" />
@@ -81,30 +87,6 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="OperandTask">
-              <PropertyRef Name="Type" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OperandValue_OperandValue">
-          <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="1" />
-          <End Role="OperandValue" Type="Self.OperandValue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ContractItem">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OperandValue">
-              <PropertyRef Name="ContractItemId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OperandValue_TypeValue">
-          <End Role="TypeValue" Type="Self.TypeValue" Multiplicity="1" />
-          <End Role="OperandValue" Type="Self.OperandValue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TypeValue">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OperandValue">
               <PropertyRef Name="Type" />
             </Dependent>
           </ReferentialConstraint>
@@ -137,25 +119,20 @@
           <EntitySet Name="Contract" EntityType="Self.Contract" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ContractItem" EntityType="Self.ContractItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperandTask" EntityType="Self.OperandTask" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OperandValue" EntityType="Self.OperandValue" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Relationship" EntityType="Self.Relationship" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeTask" EntityType="Self.TypeTask" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeValue" EntityType="Self.TypeValue" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_ContractItem_Contract1" Association="Self.FK_ContractItem_Contract1">
+          <AssociationSet Name="FK_ContractItem_Contract" Association="Self.FK_ContractItem_Contract">
             <End Role="Contract" EntitySet="Contract" />
+            <End Role="ContractItem" EntitySet="ContractItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ContractItem_TypeValue" Association="Self.FK_ContractItem_TypeValue">
+            <End Role="TypeValue" EntitySet="TypeValue" />
             <End Role="ContractItem" EntitySet="ContractItem" />
           </AssociationSet>
           <AssociationSet Name="FK_Operand_Type" Association="Self.FK_Operand_Type">
             <End Role="TypeTask" EntitySet="TypeTask" />
             <End Role="OperandTask" EntitySet="OperandTask" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OperandValue_OperandValue" Association="Self.FK_OperandValue_OperandValue">
-            <End Role="ContractItem" EntitySet="ContractItem" />
-            <End Role="OperandValue" EntitySet="OperandValue" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OperandValue_TypeValue" Association="Self.FK_OperandValue_TypeValue">
-            <End Role="TypeValue" EntitySet="TypeValue" />
-            <End Role="OperandValue" EntitySet="OperandValue" />
           </AssociationSet>
           <AssociationSet Name="FK_Relationship_ContractItem" Association="Self.FK_Relationship_ContractItem">
             <End Role="ContractItem" EntitySet="ContractItem" />
@@ -176,7 +153,7 @@
           </Key>
           <Property Name="Uid" Type="Guid" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="ContractItems" Relationship="Self.FK_ContractItem_Contract1" FromRole="Contract" ToRole="ContractItem" />
+          <NavigationProperty Name="ContractItems" Relationship="Self.FK_ContractItem_Contract" FromRole="Contract" ToRole="ContractItem" />
         </EntityType>
         <EntityType Name="ContractItem">
           <Key>
@@ -185,9 +162,12 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="ContractUid" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="Contract" Relationship="Self.FK_ContractItem_Contract1" FromRole="ContractItem" ToRole="Contract" />
-          <NavigationProperty Name="OperandValues" Relationship="Self.FK_OperandValue_OperandValue" FromRole="ContractItem" ToRole="OperandValue" />
+          <Property Name="TypeValueId" Type="Int32" Nullable="false" />
+          <Property Name="Factor" Type="Decimal" Precision="10" Scale="7" Nullable="false" />
+          <NavigationProperty Name="Contract" Relationship="Self.FK_ContractItem_Contract" FromRole="ContractItem" ToRole="Contract" />
+          <NavigationProperty Name="TypeValue" Relationship="Self.FK_ContractItem_TypeValue" FromRole="ContractItem" ToRole="TypeValue" />
           <NavigationProperty Name="Relationships" Relationship="Self.FK_Relationship_ContractItem" FromRole="ContractItem" ToRole="Relationship" />
+          <Property Name="FixValue" Type="Decimal" Precision="15" Scale="2" />
         </EntityType>
         <EntityType Name="OperandTask">
           <Key>
@@ -197,17 +177,6 @@
           <Property Name="Type" Type="Int32" Nullable="false" />
           <Property Name="Value" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="TypeTask" Relationship="Self.FK_Operand_Type" FromRole="OperandTask" ToRole="TypeTask" />
-        </EntityType>
-        <EntityType Name="OperandValue">
-          <Key>
-            <PropertyRef Name="Key" />
-          </Key>
-          <Property Name="Key" Type="Guid" Nullable="false" />
-          <Property Name="Type" Type="Int32" Nullable="false" />
-          <Property Name="Value" Type="Decimal" Precision="15" Scale="2" Nullable="false" />
-          <Property Name="ContractItemId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ContractItem" Relationship="Self.FK_OperandValue_OperandValue" FromRole="OperandValue" ToRole="ContractItem" />
-          <NavigationProperty Name="TypeValue" Relationship="Self.FK_OperandValue_TypeValue" FromRole="OperandValue" ToRole="TypeValue" />
         </EntityType>
         <EntityType Name="Relationship">
           <Key>
@@ -236,9 +205,9 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="OperandValues" Relationship="Self.FK_OperandValue_TypeValue" FromRole="TypeValue" ToRole="OperandValue" />
+          <NavigationProperty Name="ContractItems" Relationship="Self.FK_ContractItem_TypeValue" FromRole="TypeValue" ToRole="ContractItem" />
         </EntityType>
-        <Association Name="FK_ContractItem_Contract1">
+        <Association Name="FK_ContractItem_Contract">
           <End Role="Contract" Type="Self.Contract" Multiplicity="1" />
           <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="*" />
           <ReferentialConstraint>
@@ -250,15 +219,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OperandValue_OperandValue">
-          <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="1" />
-          <End Role="OperandValue" Type="Self.OperandValue" Multiplicity="*" />
+        <Association Name="FK_ContractItem_TypeValue">
+          <End Role="TypeValue" Type="Self.TypeValue" Multiplicity="1" />
+          <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="ContractItem">
+            <Principal Role="TypeValue">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OperandValue">
-              <PropertyRef Name="ContractItemId" />
+            <Dependent Role="ContractItem">
+              <PropertyRef Name="TypeValueId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -286,18 +255,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OperandValue_TypeValue">
-          <End Role="TypeValue" Type="Self.TypeValue" Multiplicity="1" />
-          <End Role="OperandValue" Type="Self.OperandValue" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TypeValue">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OperandValue">
-              <PropertyRef Name="Type" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Relationship_TypeTask">
           <End Role="TypeTask" Type="Self.TypeTask" Multiplicity="1" />
           <End Role="Relationship" Type="Self.Relationship" Multiplicity="*" />
@@ -314,17 +271,16 @@
           <EntitySet Name="Contracts" EntityType="Self.Contract" />
           <EntitySet Name="ContractItems" EntityType="Self.ContractItem" />
           <EntitySet Name="OperandTasks" EntityType="Self.OperandTask" />
-          <EntitySet Name="OperandValues" EntityType="Self.OperandValue" />
           <EntitySet Name="Relationships" EntityType="Self.Relationship" />
           <EntitySet Name="TypeTasks" EntityType="Self.TypeTask" />
           <EntitySet Name="TypeValues" EntityType="Self.TypeValue" />
-          <AssociationSet Name="FK_ContractItem_Contract1" Association="Self.FK_ContractItem_Contract1">
+          <AssociationSet Name="FK_ContractItem_Contract" Association="Self.FK_ContractItem_Contract">
             <End Role="Contract" EntitySet="Contracts" />
             <End Role="ContractItem" EntitySet="ContractItems" />
           </AssociationSet>
-          <AssociationSet Name="FK_OperandValue_OperandValue" Association="Self.FK_OperandValue_OperandValue">
+          <AssociationSet Name="FK_ContractItem_TypeValue" Association="Self.FK_ContractItem_TypeValue">
+            <End Role="TypeValue" EntitySet="TypeValues" />
             <End Role="ContractItem" EntitySet="ContractItems" />
-            <End Role="OperandValue" EntitySet="OperandValues" />
           </AssociationSet>
           <AssociationSet Name="FK_Relationship_ContractItem" Association="Self.FK_Relationship_ContractItem">
             <End Role="ContractItem" EntitySet="ContractItems" />
@@ -333,10 +289,6 @@
           <AssociationSet Name="FK_Operand_Type" Association="Self.FK_Operand_Type">
             <End Role="TypeTask" EntitySet="TypeTasks" />
             <End Role="OperandTask" EntitySet="OperandTasks" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OperandValue_TypeValue" Association="Self.FK_OperandValue_TypeValue">
-            <End Role="TypeValue" EntitySet="TypeValues" />
-            <End Role="OperandValue" EntitySet="OperandValues" />
           </AssociationSet>
           <AssociationSet Name="FK_Relationship_TypeTask" Association="Self.FK_Relationship_TypeTask">
             <End Role="TypeTask" EntitySet="TypeTasks" />
@@ -360,9 +312,12 @@
           <EntitySetMapping Name="ContractItems">
             <EntityTypeMapping TypeName="ConditionCalculatorModel.ContractItem">
               <MappingFragment StoreEntitySet="ContractItem">
+                <ScalarProperty Name="FixValue" ColumnName="FixValue" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ContractUid" ColumnName="ContractUid" />
+                <ScalarProperty Name="TypeValueId" ColumnName="TypeValueId" />
+                <ScalarProperty Name="Factor" ColumnName="Factor" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -372,16 +327,6 @@
                 <ScalarProperty Name="Key" ColumnName="Key" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="Value" ColumnName="Value" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="OperandValues">
-            <EntityTypeMapping TypeName="ConditionCalculatorModel.OperandValue">
-              <MappingFragment StoreEntitySet="OperandValue">
-                <ScalarProperty Name="Key" ColumnName="Key" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Value" ColumnName="Value" />
-                <ScalarProperty Name="ContractItemId" ColumnName="ContractItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

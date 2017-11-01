@@ -17,13 +17,13 @@ namespace ConditionCalculator.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public TypeValue()
         {
-            this.OperandValues = new HashSet<OperandValue>();
+            this.ContractItems = new HashSet<ContractItem>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OperandValue> OperandValues { get; set; }
+        public virtual ICollection<ContractItem> ContractItems { get; set; }
     }
 }

@@ -43,7 +43,6 @@
     <Compile Include="ContractDto.cs" />
     <Compile Include="ContractItemDto.cs" />
     <Compile Include="OperandTaskDto.cs" />
-    <Compile Include="OperandValueDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RelationshipDto.cs" />
     <Compile Include="RequestSchemaDto.cs" />

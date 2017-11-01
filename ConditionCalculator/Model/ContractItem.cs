@@ -17,17 +17,18 @@ namespace ConditionCalculator.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ContractItem()
         {
-            this.OperandValues = new HashSet<OperandValue>();
             this.Relationships = new HashSet<Relationship>();
         }
     
         public int Id { get; set; }
         public string Type { get; set; }
         public System.Guid ContractUid { get; set; }
+        public int TypeValueId { get; set; }
+        public decimal Factor { get; set; }
+        public Nullable<decimal> FixValue { get; set; }
     
         public virtual Contract Contract { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OperandValue> OperandValues { get; set; }
+        public virtual TypeValue TypeValue { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Relationship> Relationships { get; set; }
     }

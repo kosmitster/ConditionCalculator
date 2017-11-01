@@ -4,19 +4,17 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="0320b4c72f704f2b97e33e8ea4d798f0" Name="Diagram1">
-        <EntityTypeShape EntityType="ConditionCalculatorModel.Contract" Width="1.5" PointX="0.75" PointY="4" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConditionCalculatorModel.ContractItem" Width="1.5" PointX="3" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConditionCalculatorModel.OperandTask" Width="1.5" PointX="5.25" PointY="7.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConditionCalculatorModel.OperandValue" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConditionCalculatorModel.Relationship" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConditionCalculatorModel.TypeTask" Width="1.5" PointX="3" PointY="7.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ConditionCalculatorModel.TypeValue" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <AssociationConnector Association="ConditionCalculatorModel.FK_ContractItem_Contract1" ManuallyRouted="false" />
-        <AssociationConnector Association="ConditionCalculatorModel.FK_OperandValue_OperandValue" ManuallyRouted="false" />
+      <Diagram DiagramId="d6a78748fb324c9885995763b93230d9" Name="Diagram1">
+        <EntityTypeShape EntityType="ConditionCalculatorModel.Contract" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConditionCalculatorModel.ContractItem" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConditionCalculatorModel.OperandTask" Width="1.5" PointX="5.25" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConditionCalculatorModel.Relationship" Width="1.5" PointX="5.25" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConditionCalculatorModel.TypeTask" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ConditionCalculatorModel.TypeValue" Width="1.5" PointX="0.75" PointY="5.375" IsExpanded="true" />
+        <AssociationConnector Association="ConditionCalculatorModel.FK_ContractItem_Contract" ManuallyRouted="false" />
+        <AssociationConnector Association="ConditionCalculatorModel.FK_ContractItem_TypeValue" ManuallyRouted="false" />
         <AssociationConnector Association="ConditionCalculatorModel.FK_Relationship_ContractItem" ManuallyRouted="false" />
         <AssociationConnector Association="ConditionCalculatorModel.FK_Operand_Type" ManuallyRouted="false" />
-        <AssociationConnector Association="ConditionCalculatorModel.FK_OperandValue_TypeValue" ManuallyRouted="false" />
         <AssociationConnector Association="ConditionCalculatorModel.FK_Relationship_TypeTask" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>

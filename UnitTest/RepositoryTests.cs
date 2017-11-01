@@ -69,11 +69,20 @@ namespace UnitTest
                 Uid = contractUid,
                 Name = "Договор №1"
             });
+
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 1,
+                Name = "HEP"
+            });
             repository.CreateContractItem(new ContractItemDto
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("Р")
+                Type = Convert.ToChar("Р"),
+                Factor = 1,
+                FixValue = 150,
+                TypeValueId = 1
             });
 
             Assert.IsTrue(repository.GetContractItems().Any());
@@ -103,40 +112,6 @@ namespace UnitTest
         }
 
         [Test]
-        public void CreateOperandValueTest()
-        {
-            var contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
-            IRepository repository = new Repository();
-
-            repository.CreateContract(new ContractDto
-            {
-                Uid = contractUid,
-                Name = "Договор №1"
-            });
-            repository.CreateContractItem(new ContractItemDto
-            {
-                Id = 1,
-                ContractUid = contractUid,
-                Type = Convert.ToChar("Р")
-            });
-
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "Fix"
-            });
-            repository.CreateOperandValue(new OperandValueDto
-            {
-                Key = Guid.NewGuid(),
-                Type = 1,
-                Value = "1920",
-                ContractItemId = 1
-            });
-
-            Assert.IsTrue(repository.GetOperandValues().Any());
-        }
-
-        [Test]
         public void CreateContractConditionTest()
         {
             var contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
@@ -150,12 +125,21 @@ namespace UnitTest
                 Uid = contractUid,
                 Name = "Договор №1"
             });
+
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 1,
+                Name = "Fix"
+            });
             /*CREATE Строка документа*/
             repository.CreateContractItem(new ContractItemDto
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("Р")
+                Type = Convert.ToChar("Р"),
+                TypeValueId = 1,
+                Factor = 1,
+                FixValue = 250
             });
             /*CREATE Типы*/
             repository.CreateTypeTask(new TypeTaskDto
@@ -198,11 +182,17 @@ namespace UnitTest
         }
 
         [Test]
-        public void CalculationTest()
+        public void CalculationWorkTest()
         {
             Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
-            Guid operandValueUid = Guid.Parse("0fd6a38f-2eb3-4a52-960a-25f3d52bcb2b");
             IRepository repository = new Repository();
+
+            /*CREATE результат операции*/
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 1,
+                Name = "Fix"
+            });
 
             /*CREATE Договор*/
             repository.CreateContract(new ContractDto
@@ -215,7 +205,11 @@ namespace UnitTest
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("Р")
+                Type = Convert.ToChar("Р"),
+                TypeValueId = 1,
+                Factor = 1,
+                FixValue = 1500
+
             });
             /*CREATE Типы*/
             repository.CreateTypeTask(new TypeTaskDto
@@ -269,20 +263,6 @@ namespace UnitTest
                 IsTrue = true
             });
 
-            /*CREATE результат операции*/
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "Fix"
-            });
-            repository.CreateOperandValue(new OperandValueDto
-            {
-                Key = operandValueUid,
-                Type = 1,
-                Value = "1920",
-                ContractItemId = 1
-            });
-
             var calculatedValueUid = Guid.Parse("720b2a2d-52e6-4cd3-ab5f-ebe280b4da22");
             var results = repository.Calculation(new List<RequestSchemaDto>
             {
@@ -296,14 +276,162 @@ namespace UnitTest
                     },
                     Costs = new List<KeyValuePair<string, decimal>>
                     {
-                        new KeyValuePair<string, decimal>("Retail", 2500),
-                        new KeyValuePair<string, decimal>("fix", 1500)
+                        new KeyValuePair<string, decimal>("default", 2500)
                     }
                 }
             });
 
             Assert.IsTrue(results.Single(s => s.Uid == calculatedValueUid).Result == 1500);
-            //Assert.IsTrue(results.Exists(s => s.Uid == calculatedValueUid));
+        }
+
+        [Test]
+        public void CalculationPartTest()
+        {
+            Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
+            IRepository repository = new Repository();
+
+            /*CREATE результат операции*/
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 1,
+                Name = "Fix"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 2,
+                Name = "Hep"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 3,
+                Name = "Upe"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 4,
+                Name = "Whole"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 5,
+                Name = "Retail"
+            });
+
+            /*CREATE Договор*/
+            repository.CreateContract(new ContractDto
+            {
+                Uid = contractUid,
+                Name = "Договор №1"
+            });
+            /*CREATE Строка документа*/
+            repository.CreateContractItem(new ContractItemDto
+            {
+                Id = 1,
+                ContractUid = contractUid,
+                Type = Convert.ToChar("З"),
+                TypeValueId = 2,
+                Factor = new decimal(1.7),
+                FixValue = null
+
+            });
+            /*CREATE Типы*/
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 1,
+                Name = "Code",
+                Priority = 1
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 2,
+                Name = "Brand",
+                Priority = 1
+            });
+
+            /*CREATE Тип - Code*/
+            PreTest.PrePart.CreateOperandTaskParts(repository);
+
+            /*CREATE Тип - BRAND*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 2,
+                Value = "MAZDA"
+            });
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 2,
+                Value = "OPEL"
+            });
+
+            /*CREATE отношения типов*/
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 1,
+                ContractItemId = 1,
+                TaskId = 1,
+                IsTrue = true
+            });
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 2,
+                ContractItemId = 1,
+                TaskId = 2,
+                IsTrue = true
+            });
+
+            var calculatedValue1Uid = Guid.NewGuid();
+            var calculatedValue2Uid = Guid.NewGuid();
+            var calculatedValue3Uid = Guid.NewGuid();
+
+            var results = repository.Calculation(new List<RequestSchemaDto>
+            {
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue1Uid,
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Code", "000050800C 041"),
+                        new KeyValuePair<string, string>("BRAND", "MAZDA")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("HEP", new decimal(1256.35))
+                    }
+                },
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue2Uid,
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Code", "000010230A"),
+                        new KeyValuePair<string, string>("BRAND", "OPEL")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("HEP", new decimal(5642.77))
+                    }
+                },
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue3Uid,
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Code", "1235gfgfg456"),
+                        new KeyValuePair<string, string>("BRAND", "OPEL")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("HEP", new decimal(12344.77)),
+                        new KeyValuePair<string, decimal>("default", new decimal(10000.55))
+                    }
+                }
+            });
+
+            Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(2135.80) &&
+                          results.Single(s => s.Uid == calculatedValue2Uid).Result == new decimal(9592.71) &&
+                          results.Single(s => s.Uid == calculatedValue3Uid).Result == new decimal(10000.55));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ConditionCalculator.Model;
 using Dto;
@@ -12,17 +13,16 @@ namespace ConditionCalculator
         /// </summary>
         /// <param name="contractItem"></param>
         /// <returns></returns>
-        public static int GetWeight(this ContractItem contractItem) => contractItem.Relationships.Aggregate(0,
-            (current, condition) => current + condition.TypeTask.Priority);
+        public static int GetWeight(this ContractItem contractItem) => 
+            contractItem.Relationships.Aggregate(0, (current, condition) => current + condition.TypeTask.Priority);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="contract"></param>
         /// <returns></returns>
-        public static List<ContractItem> SortByWeight(this Contract contract) => contract.ContractItems
-            .OrderBy(s => s.GetWeight())
-            .ToList();
+        public static List<ContractItem> SortByWeight(this Contract contract) => 
+            contract.ContractItems.OrderBy(s => s.GetWeight()).ToList();
 
 
         /// <summary>
@@ -38,10 +38,10 @@ namespace ConditionCalculator
                 .All(allIsTrue => allIsTrue);
 
         public static bool IsTrue(this TypeTask typeTask, RequestSchemaDto requestSchemaDto) =>
-            requestSchemaDto.Conditions.Exists(s => s.Key.ToUpper() == typeTask.Name.ToUpper())
+            requestSchemaDto.Conditions.Exists(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
             && typeTask.OperandTasks.Any(x => x.Value == requestSchemaDto
                                                   .Conditions
-                                                  .Single(s => s.Key.ToUpper() == typeTask.Name.ToUpper())
+                                                  .Single(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
                                                   .Value);
     }
 }

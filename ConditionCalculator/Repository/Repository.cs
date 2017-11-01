@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ConditionCalculator.Model;
 using Dto;
@@ -28,16 +29,6 @@ namespace ConditionCalculator.Repository
             using (var context = new ConditionCalculatorEntities())
             {
                 context.OperandTasks.Add(operandTask);
-                context.SaveChanges();
-            }
-        }
-
-        public void CreateOperandValue(OperandValueDto operandValueDto)
-        {
-            var operandValue = AutoMapper.Mapper.Map<OperandValueDto, OperandValue>(operandValueDto);
-            using (var context = new ConditionCalculatorEntities())
-            {
-                context.OperandValues.Add(operandValue);
                 context.SaveChanges();
             }
         }
@@ -90,24 +81,33 @@ namespace ConditionCalculator.Repository
             {
                 foreach (var contractItem in context.Contracts.First().SortByWeight())
                 {
-                    if (contractItem.IsTrue(requestSchemaDto))
+                    if (contractItem.IsTrue(requestSchemaDto) &&
+                        (contractItem.FixValue != null ||
+                         requestSchemaDto.Costs.Exists(x => string.Equals(x.Key.ToUpper(),
+                             contractItem.TypeValue.Name.ToUpper()))))
                     {
+                        var result = contractItem.FixValue ?? Math.Round(
+                                         requestSchemaDto.Costs
+                                             .First(s => string.Equals(s.Key.ToUpper(),
+                                                 contractItem.TypeValue.Name.ToUpper()))
+                                             .Value * contractItem.Factor, 2, MidpointRounding.AwayFromZero);
+
                         return new ResponseSchemeDto
                         {
                             Uid = requestSchemaDto.Uid,
-                            
+                            Result = result
                         };
                     }
 
                 }
             }
 
-            if (requestSchemaDto.Costs.Exists(s => s.Key == "Retail"))
+            if (requestSchemaDto.Costs.Exists(s => s.Key.ToUpper() == "default".ToUpper()))
             {
                 return new ResponseSchemeDto
                 {
                     Uid = requestSchemaDto.Uid,
-                    Result = requestSchemaDto.Costs.Single(s => s.Key == "Retail").Value
+                    Result = requestSchemaDto.Costs.Single(s => s.Key.ToUpper() == "default".ToUpper()).Value
                 };
             }
 
@@ -120,7 +120,6 @@ namespace ConditionCalculator.Repository
             {
                 context.Relationships.RemoveRange(context.Relationships.AsEnumerable());
                 context.OperandTasks.RemoveRange(context.OperandTasks.AsEnumerable());
-                context.OperandValues.RemoveRange(context.OperandValues.AsEnumerable());
                 context.TypeTasks.RemoveRange(context.TypeTasks.AsEnumerable());
                 context.TypeValues.RemoveRange(context.TypeValues.AsEnumerable());
                 context.ContractItems.RemoveRange(context.ContractItems.AsEnumerable());
@@ -178,17 +177,6 @@ namespace ConditionCalculator.Repository
             {
                 result =
                     AutoMapper.Mapper.Map<List<OperandTask>, List<OperandTaskDto>>(context.OperandTasks.ToList());
-            }
-            return result;
-        }
-
-        public List<OperandValueDto> GetOperandValues()
-        {
-            List<OperandValueDto> result;
-            using (var context = new ConditionCalculatorEntities())
-            {
-                result =
-                    AutoMapper.Mapper.Map<List<OperandValue>, List<OperandValueDto>>(context.OperandValues.ToList());
             }
             return result;
         }

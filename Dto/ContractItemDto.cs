@@ -7,5 +7,8 @@ namespace Dto
         public int Id { get; set; }
         public char Type { get; set; }
         public Guid ContractUid { get; set; }
+        public int TypeValueId { get; set; }
+        public decimal Factor { get; set; }
+        public decimal? FixValue { get; set; }
     }
 }
