@@ -397,7 +397,8 @@ namespace UnitTest
                     },
                     Costs = new List<KeyValuePair<string, decimal>>
                     {
-                        new KeyValuePair<string, decimal>("HEP", new decimal(1256.35))
+                        new KeyValuePair<string, decimal>("HEP", new decimal(1256.35)),
+                        new KeyValuePair<string, decimal>("default", new decimal(3000.45))
                     }
                 },
                 new RequestSchemaDto
@@ -410,7 +411,8 @@ namespace UnitTest
                     },
                     Costs = new List<KeyValuePair<string, decimal>>
                     {
-                        new KeyValuePair<string, decimal>("HEP", new decimal(5642.77))
+                        new KeyValuePair<string, decimal>("HEP", new decimal(5642.77)),
+                        new KeyValuePair<string, decimal>("default", new decimal(6005.45))
                     }
                 },
                 new RequestSchemaDto

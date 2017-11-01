@@ -98,7 +98,6 @@ namespace ConditionCalculator.Repository
                             Result = result
                         };
                     }
-
                 }
             }
 
