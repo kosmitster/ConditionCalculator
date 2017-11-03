@@ -17,11 +17,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="Type" Type="char" MaxLength="1" Nullable="false" />
           <Property Name="ContractUid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="TypeValueId" Type="int" Nullable="false" />
           <Property Name="Factor" Type="decimal" Precision="10" Scale="7" Nullable="false" />
           <Property Name="FixValue" Type="decimal" Precision="15" Scale="2" />
+          <Property Name="TypeSettlementId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OperandTask">
           <Key>
@@ -40,6 +40,13 @@
           <Property Name="TaskId" Type="int" Nullable="false" />
           <Property Name="IsTrue" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="TypeSettlement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="TypeTask">
           <Key>
             <PropertyRef Name="Id" />
@@ -56,14 +63,14 @@
           <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <Association Name="FK_ContractItem_Contract">
-          <End Role="Contract" Type="Self.Contract" Multiplicity="1" />
+          <End Role="TypeSettlement" Type="Self.TypeSettlement" Multiplicity="1" />
           <End Role="ContractItem" Type="Self.ContractItem" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Contract">
-              <PropertyRef Name="Uid" />
+            <Principal Role="TypeSettlement">
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="ContractItem">
-              <PropertyRef Name="ContractUid" />
+              <PropertyRef Name="TypeSettlementId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -120,10 +127,11 @@
           <EntitySet Name="ContractItem" EntityType="Self.ContractItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OperandTask" EntityType="Self.OperandTask" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Relationship" EntityType="Self.Relationship" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TypeSettlement" EntityType="Self.TypeSettlement" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeTask" EntityType="Self.TypeTask" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TypeValue" EntityType="Self.TypeValue" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_ContractItem_Contract" Association="Self.FK_ContractItem_Contract">
-            <End Role="Contract" EntitySet="Contract" />
+            <End Role="TypeSettlement" EntitySet="TypeSettlement" />
             <End Role="ContractItem" EntitySet="ContractItem" />
           </AssociationSet>
           <AssociationSet Name="FK_ContractItem_TypeValue" Association="Self.FK_ContractItem_TypeValue">
@@ -160,7 +168,6 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Type" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
           <Property Name="ContractUid" Type="Guid" Nullable="false" />
           <Property Name="TypeValueId" Type="Int32" Nullable="false" />
           <Property Name="Factor" Type="Decimal" Precision="10" Scale="7" Nullable="false" />
@@ -168,6 +175,8 @@
           <NavigationProperty Name="TypeValue" Relationship="Self.FK_ContractItem_TypeValue" FromRole="ContractItem" ToRole="TypeValue" />
           <NavigationProperty Name="Relationships" Relationship="Self.FK_Relationship_ContractItem" FromRole="ContractItem" ToRole="Relationship" />
           <Property Name="FixValue" Type="Decimal" Precision="15" Scale="2" />
+          <Property Name="TypeSettlementId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TypeSettlement" Relationship="ConditionCalculatorModel.FK_ContractItem_Contract1" FromRole="ContractItem" ToRole="TypeSettlement" />
         </EntityType>
         <EntityType Name="OperandTask">
           <Key>
@@ -294,7 +303,32 @@
             <End Role="TypeTask" EntitySet="TypeTasks" />
             <End Role="Relationship" EntitySet="Relationships" />
           </AssociationSet>
+          <EntitySet Name="TypeSettlements" EntityType="ConditionCalculatorModel.TypeSettlement" />
+          <AssociationSet Name="FK_ContractItem_Contract1" Association="ConditionCalculatorModel.FK_ContractItem_Contract1">
+            <End Role="TypeSettlement" EntitySet="TypeSettlements" />
+            <End Role="ContractItem" EntitySet="ContractItems" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="TypeSettlement">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="ContractItems" Relationship="ConditionCalculatorModel.FK_ContractItem_Contract1" FromRole="TypeSettlement" ToRole="ContractItem" />
+        </EntityType>
+        <Association Name="FK_ContractItem_Contract1">
+          <End Type="ConditionCalculatorModel.TypeSettlement" Role="TypeSettlement" Multiplicity="1" />
+          <End Type="ConditionCalculatorModel.ContractItem" Role="ContractItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TypeSettlement">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ContractItem">
+              <PropertyRef Name="TypeSettlementId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -312,9 +346,9 @@
           <EntitySetMapping Name="ContractItems">
             <EntityTypeMapping TypeName="ConditionCalculatorModel.ContractItem">
               <MappingFragment StoreEntitySet="ContractItem">
+                <ScalarProperty Name="TypeSettlementId" ColumnName="TypeSettlementId" />
                 <ScalarProperty Name="FixValue" ColumnName="FixValue" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ContractUid" ColumnName="ContractUid" />
                 <ScalarProperty Name="TypeValueId" ColumnName="TypeValueId" />
                 <ScalarProperty Name="Factor" ColumnName="Factor" />
@@ -354,6 +388,14 @@
               <MappingFragment StoreEntitySet="TypeValue">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TypeSettlements">
+            <EntityTypeMapping TypeName="ConditionCalculatorModel.TypeSettlement">
+              <MappingFragment StoreEntitySet="TypeSettlement">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

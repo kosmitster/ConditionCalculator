@@ -73,6 +73,16 @@ namespace ConditionCalculator.Repository
             }
         }
 
+        public void CreateTypeSettlement(TypeSettlementDto typeSettlementDto)
+        {
+            var typeSettlement = AutoMapper.Mapper.Map<TypeSettlementDto, TypeSettlement>(typeSettlementDto);
+            using (var context = new ConditionCalculatorEntities())
+            {
+                context.TypeSettlements.Add(typeSettlement);
+                context.SaveChanges();
+            }
+        }
+
         public List<ResponseSchemeDto> Calculation(List<RequestSchemaDto> requests) => requests.Select(Calculation).ToList();
 
         private static ResponseSchemeDto Calculation(RequestSchemaDto requestSchemaDto)
@@ -123,6 +133,7 @@ namespace ConditionCalculator.Repository
                 context.TypeValues.RemoveRange(context.TypeValues.AsEnumerable());
                 context.ContractItems.RemoveRange(context.ContractItems.AsEnumerable());
                 context.Contracts.RemoveRange(context.Contracts.AsEnumerable());
+                context.TypeSettlements.RemoveRange(context.TypeSettlements.AsEnumerable());
                 context.SaveChanges();
             }
         }

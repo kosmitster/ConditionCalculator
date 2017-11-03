@@ -47,6 +47,7 @@
     <Compile Include="RelationshipDto.cs" />
     <Compile Include="RequestSchemaDto.cs" />
     <Compile Include="ResponseSchemeDto.cs" />
+    <Compile Include="TypeSettlementDto.cs" />
     <Compile Include="TypeTaskDto.cs" />
     <Compile Include="TypeValueDto.cs" />
   </ItemGroup>

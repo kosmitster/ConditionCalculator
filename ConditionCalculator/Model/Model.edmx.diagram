@@ -16,6 +16,8 @@
         <AssociationConnector Association="ConditionCalculatorModel.FK_Relationship_ContractItem" ManuallyRouted="false" />
         <AssociationConnector Association="ConditionCalculatorModel.FK_Operand_Type" ManuallyRouted="false" />
         <AssociationConnector Association="ConditionCalculatorModel.FK_Relationship_TypeTask" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ConditionCalculatorModel.TypeSettlement" Width="1.5" PointX="7.375" PointY="0.875" />
+        <AssociationConnector Association="ConditionCalculatorModel.FK_ContractItem_Contract1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

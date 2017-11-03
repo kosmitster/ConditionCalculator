@@ -17,6 +17,9 @@ namespace UnitTest
             /*Очистка базы данных*/
             IRepository repository = new Repository();
             repository.ClearBase();
+
+            /*Заполняем справочники*/
+            PreTest.FillData.CreateAllReference();
         }
 
 
@@ -37,12 +40,7 @@ namespace UnitTest
         public void CreateTypeTaskTest()
         {
             IRepository repository = new Repository();
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 1,
-                Name = "CODE",
-                Priority = 1
-            });
+
             Assert.IsTrue(repository.GetTypeTasks().Any());
         }
 
@@ -50,11 +48,7 @@ namespace UnitTest
         public void CreateTypeValueTest()
         {
             IRepository repository = new Repository();
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "Fix"
-            });
+
             Assert.IsTrue(repository.GetTypeValues().Any());
         }
 
@@ -70,16 +64,11 @@ namespace UnitTest
                 Name = "Договор №1"
             });
 
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "HEP"
-            });
             repository.CreateContractItem(new ContractItemDto
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("Р"),
+                TypeSettlementId = 1,
                 Factor = 1,
                 FixValue = 150,
                 TypeValueId = 1
@@ -93,13 +82,6 @@ namespace UnitTest
         {
             var operandTaskUid = Guid.Parse("771152b0-480f-41c8-a395-fd7f830081c7");
             IRepository repository = new Repository();
-
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 6,
-                Name = "CODE",
-                Priority = 1
-            });
 
             repository.CreateOperandTask(new OperandTaskDto
             {
@@ -126,33 +108,15 @@ namespace UnitTest
                 Name = "Договор №1"
             });
 
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "Fix"
-            });
             /*CREATE Строка документа*/
             repository.CreateContractItem(new ContractItemDto
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("Р"),
                 TypeValueId = 1,
                 Factor = 1,
-                FixValue = 250
-            });
-            /*CREATE Типы*/
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 1,
-                Name = "CODE",
-                Priority = 1
-            });
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 2,
-                Name = "BRAND",
-                Priority = 1
+                FixValue = 250,
+                TypeSettlementId = 1
             });
 
             /*CREATE Тип = CODE*/
@@ -187,13 +151,6 @@ namespace UnitTest
             Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
             IRepository repository = new Repository();
 
-            /*CREATE результат операции*/
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "Fix"
-            });
-
             /*CREATE Договор*/
             repository.CreateContract(new ContractDto
             {
@@ -205,31 +162,17 @@ namespace UnitTest
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("Р"),
                 TypeValueId = 1,
                 Factor = 1,
-                FixValue = 1500
-
-            });
-            /*CREATE Типы*/
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 1,
-                Name = "ISWARRANTY",
-                Priority = 1
-            });
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 2,
-                Name = "BRAND",
-                Priority = 1
+                FixValue = 1500,
+                TypeSettlementId = 2
             });
 
             /*CREATE Тип - ISWARRANTY*/
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 1,
+                Type = 6,
                 Value = "true"
             });
 
@@ -252,7 +195,7 @@ namespace UnitTest
             {
                 Id = 1,
                 ContractItemId = 1,
-                TaskId = 1,
+                TaskId = 6,
                 IsTrue = true
             });
             repository.CreateRelationship(new RelationshipDto
@@ -290,33 +233,6 @@ namespace UnitTest
             Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
             IRepository repository = new Repository();
 
-            /*CREATE результат операции*/
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 1,
-                Name = "Fix"
-            });
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 2,
-                Name = "Hep"
-            });
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 3,
-                Name = "Upe"
-            });
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 4,
-                Name = "Whole"
-            });
-            repository.CreateTypeValue(new TypeValueDto
-            {
-                Id = 5,
-                Name = "Retail"
-            });
-
             /*CREATE Договор*/
             repository.CreateContract(new ContractDto
             {
@@ -328,28 +244,15 @@ namespace UnitTest
             {
                 Id = 1,
                 ContractUid = contractUid,
-                Type = Convert.ToChar("З"),
                 TypeValueId = 2,
                 Factor = new decimal(1.7),
-                FixValue = null
+                FixValue = null,
+                TypeSettlementId = 2
 
-            });
-            /*CREATE Типы*/
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 1,
-                Name = "Code",
-                Priority = 1
-            });
-            repository.CreateTypeTask(new TypeTaskDto
-            {
-                Id = 2,
-                Name = "Brand",
-                Priority = 1
             });
 
             /*CREATE Тип - Code*/
-            PreTest.PrePart.CreateOperandTaskParts(repository);
+            PreTest.FillData.CreateOperandTaskParts(repository);
 
             /*CREATE Тип - BRAND*/
             repository.CreateOperandTask(new OperandTaskDto

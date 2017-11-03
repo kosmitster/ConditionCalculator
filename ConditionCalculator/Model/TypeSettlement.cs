@@ -12,25 +12,18 @@ namespace ConditionCalculator.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class ContractItem
+    public partial class TypeSettlement
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ContractItem()
+        public TypeSettlement()
         {
-            this.Relationships = new HashSet<Relationship>();
+            this.ContractItems = new HashSet<ContractItem>();
         }
     
         public int Id { get; set; }
-        public System.Guid ContractUid { get; set; }
-        public int TypeValueId { get; set; }
-        public decimal Factor { get; set; }
-        public Nullable<decimal> FixValue { get; set; }
-        public int TypeSettlementId { get; set; }
+        public string Name { get; set; }
     
-        public virtual Contract Contract { get; set; }
-        public virtual TypeValue TypeValue { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Relationship> Relationships { get; set; }
-        public virtual TypeSettlement TypeSettlement { get; set; }
+        public virtual ICollection<ContractItem> ContractItems { get; set; }
     }
 }

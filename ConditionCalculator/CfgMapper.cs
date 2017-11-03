@@ -19,6 +19,7 @@ namespace ConditionCalculator
                 cfg.CreateMap<TypeTask, TypeTaskDto>();
                 cfg.CreateMap<TypeValue, TypeValueDto>();
                 cfg.CreateMap<Relationship, RelationshipDto>();
+                cfg.CreateMap<TypeSettlement, TypeSettlementDto>();
 
                 cfg.CreateMap<ContractDto, Contract>();
                 cfg.CreateMap<ContractItemDto, ContractItem>();
@@ -26,6 +27,7 @@ namespace ConditionCalculator
                 cfg.CreateMap<TypeTaskDto, TypeTask>();
                 cfg.CreateMap<TypeValueDto, TypeValue>();
                 cfg.CreateMap<RelationshipDto, Relationship>();
+                cfg.CreateMap<TypeSettlementDto, TypeSettlement>();
 
             });
 

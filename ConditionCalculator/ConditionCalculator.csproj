@@ -95,6 +95,9 @@
     <Compile Include="Model\Relationship.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\TypeSettlement.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\TypeTask.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

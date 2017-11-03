@@ -4,7 +4,7 @@ using Dto;
 
 namespace UnitTest.PreTest
 {
-    public static class PrePart
+    public static class FillData
     {
         public static void CreateOperandTaskParts(IRepository repository)
         {
@@ -89,6 +89,87 @@ namespace UnitTest.PreTest
                     Value = code
                 });
             }
+        }
+
+        public static void CreateAllReference()
+        {
+            IRepository repository = new Repository();
+
+            
+
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 1,
+                Name = "Fix"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 2,
+                Name = "Hep"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 3,
+                Name = "Upe"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 4,
+                Name = "Whole"
+            });
+            repository.CreateTypeValue(new TypeValueDto
+            {
+                Id = 5,
+                Name = "Retail"
+            });
+
+            repository.CreateTypeSettlement(new TypeSettlementDto
+            {
+                Id = 1,
+                Name = "Услуги"
+            });
+            repository.CreateTypeSettlement(new TypeSettlementDto
+            {
+                Id = 2,
+                Name = "Товары"
+            });
+
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 1,
+                Name = "CODE",
+                Priority = 1
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 2,
+                Name = "BRAND",
+                Priority = 3
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 3,
+                Name = "MODEL",
+                Priority = 2
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 4,
+                Name = "VIN",
+                Priority = 1
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 5,
+                Name = "CLASS",
+                Priority = 4
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 6,
+                Name = "ISWARRANTY",
+                Priority = 1
+            });
         }
     }
 }
