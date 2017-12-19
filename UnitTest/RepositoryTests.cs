@@ -80,14 +80,37 @@ namespace UnitTest
         [Test]
         public void CreateOperandTaskTest()
         {
-            var operandTaskUid = Guid.Parse("771152b0-480f-41c8-a395-fd7f830081c7");
+
             IRepository repository = new Repository();
+
+            var contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
+
+            /*CREATE Договор*/
+            repository.CreateContract(new ContractDto
+            {
+                Uid = contractUid,
+                Name = "Договор №1"
+            });
+
+            /*CREATE Строка документа*/
+            repository.CreateContractItem(new ContractItemDto
+            {
+                Id = 1,
+                ContractUid = contractUid,
+                TypeValueId = 1,
+                Factor = 1,
+                FixValue = 250,
+                TypeSettlementId = 1
+            });
+
+            var operandTaskUid = Guid.Parse("771152b0-480f-41c8-a395-fd7f830081c7");
 
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = operandTaskUid,
                 Type = 6,
-                Value = "CodeTest"
+                Value = "CodeTest",
+                ContractItemId = 1                
             });
 
             Assert.IsTrue(repository.GetOperandTasks().Any());
@@ -124,13 +147,15 @@ namespace UnitTest
             {
                 Key = operandOneUid,
                 Type = 1,
-                Value = "TestCode"
+                Value = "TestCode",
+                ContractItemId = 1
             });
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = operandTwoUid,
                 Type = 1,
-                Value = "AnotherTestCode"
+                Value = "AnotherTestCode",
+                ContractItemId = 1
             });
 
             /*CREATE отношения*/
@@ -173,7 +198,8 @@ namespace UnitTest
             {
                 Key = Guid.NewGuid(),
                 Type = 6,
-                Value = "true"
+                Value = "true",
+                ContractItemId = 1
             });
 
             /*CREATE Тип - BRAND*/
@@ -181,13 +207,15 @@ namespace UnitTest
             {
                 Key = Guid.NewGuid(),
                 Type = 2,
-                Value = "MAZDA"
+                Value = "MAZDA",
+                ContractItemId = 1
             });
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
                 Type = 2,
-                Value = "OPEL"
+                Value = "OPEL",
+                ContractItemId = 1
             });
 
             /*CREATE отношения типов*/
@@ -259,13 +287,15 @@ namespace UnitTest
             {
                 Key = Guid.NewGuid(),
                 Type = 2,
-                Value = "MAZDA"
+                Value = "MAZDA",
+                ContractItemId = 1
             });
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
                 Type = 2,
-                Value = "OPEL"
+                Value = "OPEL",
+                ContractItemId = 1
             });
 
             /*CREATE отношения типов*/

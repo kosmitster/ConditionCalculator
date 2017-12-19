@@ -17,7 +17,9 @@ namespace ConditionCalculator.Model
         public System.Guid Key { get; set; }
         public int Type { get; set; }
         public string Value { get; set; }
+        public int ContractItemId { get; set; }
     
         public virtual TypeTask TypeTask { get; set; }
+        public virtual ContractItem ContractItem { get; set; }
     }
 }

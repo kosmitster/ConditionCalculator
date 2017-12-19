@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ConditionCalculator.Model;
 using Dto;
@@ -33,13 +32,13 @@ namespace ConditionCalculator
         public static bool IsTrue(this ContractItem contractItem, RequestSchemaDto requestSchemaDto) =>
             contractItem.Relationships.OrderBy(s => s.Id)
                 .Select(relationship => relationship.IsTrue
-                    ? relationship.TypeTask.IsTrue(requestSchemaDto)
-                    : !relationship.TypeTask.IsTrue(requestSchemaDto))
+                    ? relationship.TypeTask.IsTrue(contractItem.Id, requestSchemaDto)
+                    : !relationship.TypeTask.IsTrue(contractItem.Id, requestSchemaDto))
                 .All(allIsTrue => allIsTrue);
 
-        public static bool IsTrue(this TypeTask typeTask, RequestSchemaDto requestSchemaDto) =>
+        public static bool IsTrue(this TypeTask typeTask, int contractItemId ,RequestSchemaDto requestSchemaDto) =>
             requestSchemaDto.Conditions.Exists(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
-            && typeTask.OperandTasks.Any(x => x.Value == requestSchemaDto
+            && typeTask.OperandTasks.Where(x => x.ContractItemId == contractItemId).Any(x => x.Value == requestSchemaDto
                                                   .Conditions
                                                   .Single(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
                                                   .Value);

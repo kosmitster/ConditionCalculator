@@ -7,5 +7,6 @@ namespace Dto
         public Guid Key { get; set; }
         public int Type { get; set; }
         public string Value { get; set; }
+        public int ContractItemId { get; set; }
     }
 }

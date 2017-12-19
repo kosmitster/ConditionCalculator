@@ -86,7 +86,8 @@ namespace UnitTest.PreTest
                 {
                     Key = Guid.NewGuid(),
                     Type = 1,
-                    Value = code
+                    Value = code,
+                    ContractItemId = 1
                 });
             }
         }
