@@ -1,17 +1,13 @@
 ﻿USE ConditionCalculator
 
-/*Заполняю операции*/
-INSERT INTO Variant VALUES(1, 'AND')
-INSERT INTO Variant VALUES(2, 'OR')
-
 /*Заполняю TypeTask*/
-INSERT INTO TypeTask VALUES(1, 'GOMO', 1)
-INSERT INTO TypeTask VALUES(2, 'BRAND', 3)
-INSERT INTO TypeTask VALUES(3, 'MODEL', 2)
-INSERT INTO TypeTask VALUES(4, 'VIN', 1)
-INSERT INTO TypeTask VALUES(5, 'KLASS', 4)
-INSERT INTO TypeTask VALUES(6, 'CODE', 1)
-INSERT INTO TypeTask VALUES(7, 'GARANT', 1)
+INSERT INTO TypeTask VALUES(1, 'CODE', 1)
+INSERT INTO TypeTask VALUES(2, 'GOMO', 2)
+INSERT INTO TypeTask VALUES(3, 'BRAND', 3)
+INSERT INTO TypeTask VALUES(5, 'MODEL', 2)
+INSERT INTO TypeTask VALUES(6, 'VIN', 1)
+INSERT INTO TypeTask VALUES(7, 'CLASS', 4)
+INSERT INTO TypeTask VALUES(8, 'ISWARRANTY', 1)
 
 /*Заполняю TypeValue*/
 INSERT INTO TypeValue VALUES(1, 'Fix')
@@ -19,3 +15,8 @@ INSERT INTO TypeValue VALUES(2, 'Hep')
 INSERT INTO TypeValue VALUES(3, 'Upe')
 INSERT INTO TypeValue VALUES(4, 'Whole')
 INSERT INTO TypeValue VALUES(5, 'Retail')
+
+/*Заполняю TypeSettlement*/
+INSERT INTO TypeSettlement VALUES(1, 'Услуги')
+INSERT INTO TypeSettlement VALUES(2, 'Товары')
+	

@@ -368,5 +368,63 @@ namespace UnitTest
                           results.Single(s => s.Uid == calculatedValue2Uid).Result == new decimal(9592.71) &&
                           results.Single(s => s.Uid == calculatedValue3Uid).Result == new decimal(10000.55));
         }
+
+        [Test]
+        public void CalculationWorkTest2()
+        {
+            //Ренессанс ООО
+
+            Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
+            IRepository repository = new Repository();
+
+            /*CREATE Договор*/
+            repository.CreateContract(new ContractDto
+            {
+                Uid = contractUid,
+                Name = "Договор №1"
+            });
+            /*CREATE Строка документа*/
+            repository.CreateContractItem(new ContractItemDto
+            {
+                Id = 1,
+                ContractUid = contractUid,
+                TypeValueId = 1,
+                Factor = 1,
+                FixValue = 960,
+                TypeSettlementId = 1
+
+            });
+
+            /*CREATE Тип - CLASS*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 5,
+                Value = "A",
+                ContractItemId = 1
+            });
+
+            var calculatedValue1Uid = Guid.NewGuid();
+
+            var results = repository.Calculation(new List<RequestSchemaDto>
+            {
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue1Uid,
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("CLASS", "A")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("HEP", new decimal(1256.35)),
+                        new KeyValuePair<string, decimal>("default", new decimal(3000.45))
+                    }
+                }
+            });
+
+            Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(960));
+        }
+
     }
 }
