@@ -144,32 +144,56 @@ namespace UnitTest.PreTest
             repository.CreateTypeTask(new TypeTaskDto
             {
                 Id = 2,
+                Name = "GOMO",
+                Priority = 2
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 3,
                 Name = "BRAND",
                 Priority = 3
             });
             repository.CreateTypeTask(new TypeTaskDto
             {
-                Id = 3,
+                Id = 5,
                 Name = "MODEL",
                 Priority = 2
             });
             repository.CreateTypeTask(new TypeTaskDto
             {
-                Id = 4,
+                Id = 6,
                 Name = "VIN",
                 Priority = 1
             });
             repository.CreateTypeTask(new TypeTaskDto
             {
-                Id = 5,
+                Id = 7,
                 Name = "CLASS",
                 Priority = 4
             });
             repository.CreateTypeTask(new TypeTaskDto
             {
-                Id = 6,
+                Id = 8,
                 Name = "ISWARRANTY",
                 Priority = 1
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 9,
+                Name = "ISGOMO",
+                Priority = 3
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 10,
+                Name = "ANYPART",
+                Priority = 4
+            });
+            repository.CreateTypeTask(new TypeTaskDto
+            {
+                Id = 11,
+                Name = "SHOP",
+                Priority = 5
             });
         }
     }

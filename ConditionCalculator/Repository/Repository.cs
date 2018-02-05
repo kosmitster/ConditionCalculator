@@ -89,7 +89,7 @@ namespace ConditionCalculator.Repository
         {
             using (var context = new ConditionCalculatorEntities())
             {
-                foreach (var contractItem in context.Contracts.First().SortByWeight())
+                foreach (var contractItem in context.Contracts.First().SortByWeight(requestSchemaDto))
                 {
                     if (contractItem.IsTrue(requestSchemaDto) &&
                         (contractItem.FixValue != null ||

@@ -19,9 +19,12 @@ namespace ConditionCalculator
         /// 
         /// </summary>
         /// <param name="contract"></param>
+        /// <param name="requestSchemaDto"></param>
         /// <returns></returns>
-        public static List<ContractItem> SortByWeight(this Contract contract) => 
-            contract.ContractItems.OrderBy(s => s.GetWeight()).ToList();
+        public static List<ContractItem> SortByWeight(this Contract contract, RequestSchemaDto requestSchemaDto) =>
+            contract.ContractItems.Where(s => s.TypeSettlement.Name == requestSchemaDto.TypeSettlement)
+                .OrderBy(s => s.GetWeight())
+                .ToList();
 
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace ConditionCalculator
         /// <param name="contractItem">условие</param>
         /// <param name="requestSchemaDto">запрашиваемые данные</param>
         public static bool IsTrue(this ContractItem contractItem, RequestSchemaDto requestSchemaDto) =>
-            contractItem.Relationships.OrderBy(s => s.Id)
+            contractItem.Relationships.Any() && contractItem.Relationships.OrderBy(s => s.Id)
                 .Select(relationship => relationship.IsTrue
                     ? relationship.TypeTask.IsTrue(contractItem.Id, requestSchemaDto)
                     : !relationship.TypeTask.IsTrue(contractItem.Id, requestSchemaDto))
@@ -38,9 +41,9 @@ namespace ConditionCalculator
 
         public static bool IsTrue(this TypeTask typeTask, int contractItemId ,RequestSchemaDto requestSchemaDto) =>
             requestSchemaDto.Conditions.Exists(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
-            && typeTask.OperandTasks.Where(x => x.ContractItemId == contractItemId).Any(x => x.Value == requestSchemaDto
+            && typeTask.OperandTasks.Where(x => x.ContractItemId == contractItemId).Any(x => x.Value.ToUpper() == requestSchemaDto
                                                   .Conditions
                                                   .Single(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
-                                                  .Value);
+                                                  .Value.ToUpper());
     }
 }

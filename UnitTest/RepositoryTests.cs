@@ -189,15 +189,15 @@ namespace UnitTest
                 ContractUid = contractUid,
                 TypeValueId = 1,
                 Factor = 1,
-                FixValue = 1500,
-                TypeSettlementId = 2
+                FixValue = 1500, //Фиксированный нормочас
+                TypeSettlementId = 1 //Услуга 
             });
 
             /*CREATE Тип - ISWARRANTY*/
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 6,
+                Type = 8,
                 Value = "true",
                 ContractItemId = 1
             });
@@ -206,14 +206,14 @@ namespace UnitTest
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 2,
+                Type = 3,
                 Value = "MAZDA",
                 ContractItemId = 1
             });
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 2,
+                Type = 3,
                 Value = "OPEL",
                 ContractItemId = 1
             });
@@ -223,14 +223,14 @@ namespace UnitTest
             {
                 Id = 1,
                 ContractItemId = 1,
-                TaskId = 6,
+                TaskId = 8,
                 IsTrue = true
             });
             repository.CreateRelationship(new RelationshipDto
             {
                 Id = 2,
                 ContractItemId = 1,
-                TaskId = 2,
+                TaskId = 3,
                 IsTrue = true
             });
 
@@ -240,6 +240,7 @@ namespace UnitTest
                 new RequestSchemaDto
                 {
                     Uid = calculatedValueUid,
+                    TypeSettlement = "Услуги",
                     Conditions = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("ISWARRANTY", "true"),
@@ -286,14 +287,14 @@ namespace UnitTest
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 2,
+                Type = 3,
                 Value = "MAZDA",
                 ContractItemId = 1
             });
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 2,
+                Type = 3,
                 Value = "OPEL",
                 ContractItemId = 1
             });
@@ -310,7 +311,7 @@ namespace UnitTest
             {
                 Id = 2,
                 ContractItemId = 1,
-                TaskId = 2,
+                TaskId = 3,
                 IsTrue = true
             });
 
@@ -323,6 +324,7 @@ namespace UnitTest
                 new RequestSchemaDto
                 {
                     Uid = calculatedValue1Uid,
+                    TypeSettlement = "Товары",
                     Conditions = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("Code", "000050800C 041"),
@@ -337,6 +339,7 @@ namespace UnitTest
                 new RequestSchemaDto
                 {
                     Uid = calculatedValue2Uid,
+                    TypeSettlement = "Товары",
                     Conditions = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("Code", "000010230A"),
@@ -351,6 +354,7 @@ namespace UnitTest
                 new RequestSchemaDto
                 {
                     Uid = calculatedValue3Uid,
+                    TypeSettlement = "Товары",
                     Conditions = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("Code", "1235gfgfg456"),
@@ -368,6 +372,131 @@ namespace UnitTest
                           results.Single(s => s.Uid == calculatedValue2Uid).Result == new decimal(9592.71) &&
                           results.Single(s => s.Uid == calculatedValue3Uid).Result == new decimal(10000.55));
         }
+
+        [Test]
+        public void CalculationPartTest_AutoMative()
+        {
+            Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
+            IRepository repository = new Repository();
+
+            /*CREATE Договор*/
+            repository.CreateContract(new ContractDto
+            {
+                Uid = contractUid,
+                Name = "Договор №1"
+            });
+            /*CREATE Строка документа*/
+            repository.CreateContractItem(new ContractItemDto
+            {
+                Id = 1,
+                ContractUid = contractUid,
+                TypeValueId = 5,
+                Factor = new decimal(0.84),
+                FixValue = null,
+                TypeSettlementId = 2
+
+            });
+
+            /*CREATE Тип - ISWARRANTY*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 8,
+                Value = "true",
+                ContractItemId = 1
+            });
+
+            /*CREATE Тип - BRAND*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 3,
+                Value = "VOLKSWAGEN PKW",
+                ContractItemId = 1
+            });
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 3,
+                Value = "VOLKSWAGEN NFZ",
+                ContractItemId = 1
+            });
+
+            /*CREATE отношения типов*/
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 1,
+                ContractItemId = 1,
+                TaskId = 8,
+                IsTrue = true
+            });
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 2,
+                ContractItemId = 1,
+                TaskId = 3,
+                IsTrue = true
+            });
+
+            var calculatedValue1Uid = Guid.NewGuid();
+            var calculatedValue2Uid = Guid.NewGuid();
+            var calculatedValue3Uid = Guid.NewGuid();
+
+            var results = repository.Calculation(new List<RequestSchemaDto>
+            {
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue1Uid,
+                    TypeSettlement = "Товары",
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Code", "000050800C 041"),
+                        new KeyValuePair<string, string>("BRAND", "VOLKSWAGEN PKW"),
+                        new KeyValuePair<string, string>("ISWARRANTY", "true")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("Retail", new decimal(1256.35)),
+                        new KeyValuePair<string, decimal>("default", new decimal(3000.45))
+                    }
+                },
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue2Uid,
+                    TypeSettlement = "Товары",
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Code", "000010230A"),
+                        new KeyValuePair<string, string>("BRAND", "OPEL")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("HEP", new decimal(5642.77)),
+                        new KeyValuePair<string, decimal>("default", new decimal(6005.45))
+                    }
+                },
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue3Uid,
+                    TypeSettlement = "Товары",
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("Code", "1235gfgfg456"),
+                        new KeyValuePair<string, string>("BRAND", "OPEL")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("HEP", new decimal(12344.77)),
+                        new KeyValuePair<string, decimal>("default", new decimal(10000.55))
+                    }
+                }
+            });
+
+            Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(1055.33) &&
+                          results.Single(s => s.Uid == calculatedValue2Uid).Result == new decimal(6005.45) &&
+                          results.Single(s => s.Uid == calculatedValue3Uid).Result == new decimal(10000.55));
+        }
+
 
         [Test]
         public void CalculationWorkTest2()
@@ -392,16 +521,24 @@ namespace UnitTest
                 Factor = 1,
                 FixValue = 960,
                 TypeSettlementId = 1
-
             });
 
             /*CREATE Тип - CLASS*/
             repository.CreateOperandTask(new OperandTaskDto
             {
                 Key = Guid.NewGuid(),
-                Type = 5,
+                Type = 7,
                 Value = "A",
                 ContractItemId = 1
+            });
+
+            /*CREATE отношения типов*/
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 1,
+                ContractItemId = 1,
+                TaskId = 7,
+                IsTrue = true
             });
 
             var calculatedValue1Uid = Guid.NewGuid();
@@ -411,6 +548,7 @@ namespace UnitTest
                 new RequestSchemaDto
                 {
                     Uid = calculatedValue1Uid,
+                    TypeSettlement = "Услуги",
                     Conditions = new List<KeyValuePair<string, string>>
                     {
                         new KeyValuePair<string, string>("CLASS", "A")
@@ -426,5 +564,116 @@ namespace UnitTest
             Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(960));
         }
 
+        /// <summary>
+        /// Проверяю расчёт приоритетов согласно установленным параметрам 
+        /// </summary>
+        [Test]
+        public void CalculationWorkTestPriority()
+        {
+            Guid contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
+            IRepository repository = new Repository();
+
+            /*CREATE Договор*/
+            repository.CreateContract(new ContractDto
+            {
+                Uid = contractUid,
+                Name = "Договор №1"
+            });
+            /*CREATE Строка документа*/
+            repository.CreateContractItem(new ContractItemDto
+            {
+                Id = 1,
+                ContractUid = contractUid,
+                TypeValueId = 1,
+                Factor = 1,
+                FixValue = 1100,
+                TypeSettlementId = 1
+            });
+
+            /*CREATE Тип - BRAND*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 3,
+                Value = "AUDI",
+                ContractItemId = 1
+            });
+
+            /*CREATE Тип - ISWARRANTY*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 8,
+                Value = "true",
+                ContractItemId = 1
+            });
+
+            /*CREATE отношения типов*/
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 1,
+                ContractItemId = 1,
+                TaskId = 3,
+                IsTrue = true
+            });
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 2,
+                ContractItemId = 1,
+                TaskId = 8,
+                IsTrue = true
+            });
+
+
+            /*CREATE Строка документа*/
+            repository.CreateContractItem(new ContractItemDto
+            {
+                Id = 2,
+                ContractUid = contractUid,
+                TypeValueId = 1,
+                Factor = 1,
+                FixValue = 1200,
+                TypeSettlementId = 1
+            });
+            /*CREATE Тип - BRAND*/
+            repository.CreateOperandTask(new OperandTaskDto
+            {
+                Key = Guid.NewGuid(),
+                Type = 3,
+                Value = "AUDI",
+                ContractItemId = 2
+            });
+
+            /*CREATE отношения типов*/
+            repository.CreateRelationship(new RelationshipDto
+            {
+                Id = 3,
+                ContractItemId = 2,
+                TaskId = 3,
+                IsTrue = true
+            });
+
+            var calculatedValue1Uid = Guid.NewGuid();
+
+            var results = repository.Calculation(new List<RequestSchemaDto>
+            {
+                new RequestSchemaDto
+                {
+                    Uid = calculatedValue1Uid,
+                    TypeSettlement = "Услуги",
+                    Conditions = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("BRAND", "AUDI"),
+                        new KeyValuePair<string, string>("ISWARRANTY", "true")
+                    },
+                    Costs = new List<KeyValuePair<string, decimal>>
+                    {
+                        new KeyValuePair<string, decimal>("default", new decimal(3000.45))
+                    }
+                }
+            });
+
+            Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(1200));
+        }
     }
 }
