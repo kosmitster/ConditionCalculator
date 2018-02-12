@@ -673,7 +673,7 @@ namespace UnitTest
                 }
             });
 
-            Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(1200));
+            Assert.IsTrue(results.Single(s => s.Uid == calculatedValue1Uid).Result == new decimal(1100));
         }
     }
 }

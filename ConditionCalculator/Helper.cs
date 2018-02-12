@@ -8,22 +8,14 @@ namespace ConditionCalculator
     public static class Helper
     {
         /// <summary>
-        /// Сортируй условие договора по весу каждого члена
+        /// Сортировка строк договора по приоритету
         /// </summary>
-        /// <param name="contractItem"></param>
-        /// <returns></returns>
-        public static int GetWeight(this ContractItem contractItem) => 
-            contractItem.Relationships.Aggregate(0, (current, condition) => current + condition.TypeTask.Priority);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="contract"></param>
-        /// <param name="requestSchemaDto"></param>
-        /// <returns></returns>
+        /// <param name="contract">Договор</param>
+        /// <param name="requestSchemaDto">Схема</param>
+        /// <returns>Отсортированный список строк договора</returns>
         public static List<ContractItem> SortByWeight(this Contract contract, RequestSchemaDto requestSchemaDto) =>
             contract.ContractItems.Where(s => s.TypeSettlement.Name == requestSchemaDto.TypeSettlement)
-                .OrderBy(s => s.GetWeight())
+                .OrderBy(x => x.Relationships.Min(s => s.TypeTask.Priority))
                 .ToList();
 
 
