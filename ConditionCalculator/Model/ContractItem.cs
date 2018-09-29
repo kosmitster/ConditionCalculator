@@ -17,7 +17,6 @@ namespace ConditionCalculator.Model
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public ContractItem()
         {
-            this.Relationships = new HashSet<Relationship>();
             this.OperandTasks = new HashSet<OperandTask>();
         }
     
@@ -30,8 +29,6 @@ namespace ConditionCalculator.Model
     
         public virtual Contract Contract { get; set; }
         public virtual TypeValue TypeValue { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Relationship> Relationships { get; set; }
         public virtual TypeSettlement TypeSettlement { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OperandTask> OperandTasks { get; set; }

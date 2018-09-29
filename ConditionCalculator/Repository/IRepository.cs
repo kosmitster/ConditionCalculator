@@ -10,7 +10,6 @@ namespace ConditionCalculator.Repository
         void CreateTypeTask(TypeTaskDto typeTaskDto);
         void CreateTypeValue(TypeValueDto typeValueDto);
         void CreateContractItem(ContractItemDto contractItemDto);
-        void CreateRelationship(RelationshipDto relationshipDto);
         void CreateTypeSettlement(TypeSettlementDto typeSettlementDto);
 
         List<ResponseSchemeDto> Calculation(List<RequestSchemaDto> requests);
@@ -23,6 +22,6 @@ namespace ConditionCalculator.Repository
         List<TypeValueDto> GetTypeValues();
         List<ContractItemDto> GetContractItems();
         List<OperandTaskDto> GetOperandTasks();
-        List<RelationshipDto> GetRelationships();        
+        
     }
 }

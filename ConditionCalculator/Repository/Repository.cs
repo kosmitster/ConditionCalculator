@@ -63,16 +63,6 @@ namespace ConditionCalculator.Repository
             }
         }
 
-        public void CreateRelationship(RelationshipDto relationshipDto)
-        {
-            var relationshipType = AutoMapper.Mapper.Map<RelationshipDto, Relationship>(relationshipDto);
-            using (var context = new ConditionCalculatorEntities())
-            {
-                context.Relationships.Add(relationshipType);
-                context.SaveChanges();
-            }
-        }
-
         public void CreateTypeSettlement(TypeSettlementDto typeSettlementDto)
         {
             var typeSettlement = AutoMapper.Mapper.Map<TypeSettlementDto, TypeSettlement>(typeSettlementDto);
@@ -127,7 +117,6 @@ namespace ConditionCalculator.Repository
         {
             using (var context = new ConditionCalculatorEntities())
             {
-                context.Relationships.RemoveRange(context.Relationships.AsEnumerable());
                 context.OperandTasks.RemoveRange(context.OperandTasks.AsEnumerable());
                 context.TypeTasks.RemoveRange(context.TypeTasks.AsEnumerable());
                 context.TypeValues.RemoveRange(context.TypeValues.AsEnumerable());
@@ -187,17 +176,6 @@ namespace ConditionCalculator.Repository
             {
                 result =
                     AutoMapper.Mapper.Map<List<OperandTask>, List<OperandTaskDto>>(context.OperandTasks.ToList());
-            }
-            return result;
-        }
-
-        public List<RelationshipDto> GetRelationships()
-        {
-            List<RelationshipDto> result;
-            using (var context = new ConditionCalculatorEntities())
-            {
-                result =
-                    AutoMapper.Mapper.Map<List<Relationship>, List<RelationshipDto>>(context.Relationships.ToList());
             }
             return result;
         }

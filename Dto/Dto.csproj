@@ -44,7 +44,6 @@
     <Compile Include="ContractItemDto.cs" />
     <Compile Include="OperandTaskDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RelationshipDto.cs" />
     <Compile Include="RequestSchemaDto.cs" />
     <Compile Include="ResponseSchemeDto.cs" />
     <Compile Include="TypeSettlementDto.cs" />

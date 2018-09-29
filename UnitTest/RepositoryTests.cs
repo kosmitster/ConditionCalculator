@@ -116,59 +116,6 @@ namespace UnitTest
             Assert.IsTrue(repository.GetOperandTasks().Any());
         }
 
-        [Test]
-        public void CreateContractConditionTest()
-        {
-            var contractUid = Guid.Parse("b8f4e1e1-dbc0-48fc-a6bf-de4175a250d1");
-            var operandOneUid = Guid.Parse("828145e9-8cff-4642-af33-b95bf1fef65d");
-            var operandTwoUid = Guid.Parse("0e69c042-1a9d-4f7d-8444-ca09ccc73890");
-            IRepository repository = new Repository();
-
-            /*CREATE Договор*/
-            repository.CreateContract(new ContractDto
-            {
-                Uid = contractUid,
-                Name = "Договор №1"
-            });
-
-            /*CREATE Строка документа*/
-            repository.CreateContractItem(new ContractItemDto
-            {
-                Id = 1,
-                ContractUid = contractUid,
-                TypeValueId = 1,
-                Factor = 1,
-                FixValue = 250,
-                TypeSettlementId = 1
-            });
-
-            /*CREATE Тип = CODE*/
-            repository.CreateOperandTask(new OperandTaskDto
-            {
-                Key = operandOneUid,
-                Type = 1,
-                Value = "TestCode",
-                ContractItemId = 1
-            });
-            repository.CreateOperandTask(new OperandTaskDto
-            {
-                Key = operandTwoUid,
-                Type = 1,
-                Value = "AnotherTestCode",
-                ContractItemId = 1
-            });
-
-            /*CREATE отношения*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 1,
-                ContractItemId = 1,
-                TaskId = 1,
-                IsTrue = true
-            });
-
-            Assert.IsTrue(repository.GetRelationships().Any());
-        }
 
         [Test]
         public void CalculationWorkTest()
@@ -216,22 +163,6 @@ namespace UnitTest
                 Type = 3,
                 Value = "OPEL",
                 ContractItemId = 1
-            });
-
-            /*CREATE отношения типов*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 1,
-                ContractItemId = 1,
-                TaskId = 8,
-                IsTrue = true
-            });
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 2,
-                ContractItemId = 1,
-                TaskId = 3,
-                IsTrue = true
             });
 
             var calculatedValueUid = Guid.Parse("720b2a2d-52e6-4cd3-ab5f-ebe280b4da22");
@@ -299,21 +230,6 @@ namespace UnitTest
                 ContractItemId = 1
             });
 
-            /*CREATE отношения типов*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 1,
-                ContractItemId = 1,
-                TaskId = 1,
-                IsTrue = true
-            });
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 2,
-                ContractItemId = 1,
-                TaskId = 3,
-                IsTrue = true
-            });
 
             var calculatedValue1Uid = Guid.NewGuid();
             var calculatedValue2Uid = Guid.NewGuid();
@@ -422,22 +338,6 @@ namespace UnitTest
                 ContractItemId = 1
             });
 
-            /*CREATE отношения типов*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 1,
-                ContractItemId = 1,
-                TaskId = 8,
-                IsTrue = true
-            });
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 2,
-                ContractItemId = 1,
-                TaskId = 3,
-                IsTrue = true
-            });
-
             var calculatedValue1Uid = Guid.NewGuid();
             var calculatedValue2Uid = Guid.NewGuid();
             var calculatedValue3Uid = Guid.NewGuid();
@@ -532,15 +432,6 @@ namespace UnitTest
                 ContractItemId = 1
             });
 
-            /*CREATE отношения типов*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 1,
-                ContractItemId = 1,
-                TaskId = 7,
-                IsTrue = true
-            });
-
             var calculatedValue1Uid = Guid.NewGuid();
 
             var results = repository.Calculation(new List<RequestSchemaDto>
@@ -608,23 +499,6 @@ namespace UnitTest
                 ContractItemId = 1
             });
 
-            /*CREATE отношения типов*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 1,
-                ContractItemId = 1,
-                TaskId = 3,
-                IsTrue = true
-            });
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 2,
-                ContractItemId = 1,
-                TaskId = 8,
-                IsTrue = true
-            });
-
-
             /*CREATE Строка документа*/
             repository.CreateContractItem(new ContractItemDto
             {
@@ -642,15 +516,6 @@ namespace UnitTest
                 Type = 3,
                 Value = "AUDI",
                 ContractItemId = 2
-            });
-
-            /*CREATE отношения типов*/
-            repository.CreateRelationship(new RelationshipDto
-            {
-                Id = 3,
-                ContractItemId = 2,
-                TaskId = 3,
-                IsTrue = true
             });
 
             var calculatedValue1Uid = Guid.NewGuid();

@@ -15,27 +15,33 @@ namespace ConditionCalculator
         /// <returns>Отсортированный список строк договора</returns>
         public static List<ContractItem> SortByWeight(this Contract contract, RequestSchemaDto requestSchemaDto) =>
             contract.ContractItems.Where(s => s.TypeSettlement.Name == requestSchemaDto.TypeSettlement)
-                .OrderBy(x => x.Relationships.Min(s => s.TypeTask.Priority))
+                .OrderBy(x => x.OperandTasks.Min(y => y.TypeTask.Priority))
                 .ToList();
 
 
         /// <summary>
-        /// Верно ли условие?
+        /// Все ли условия договора верны утверждению 
         /// </summary>
-        /// <param name="contractItem">условие</param>
+        /// <param name="contractItem">Утверждение договора</param>
         /// <param name="requestSchemaDto">запрашиваемые данные</param>
         public static bool IsTrue(this ContractItem contractItem, RequestSchemaDto requestSchemaDto) =>
-            contractItem.Relationships.Any() && contractItem.Relationships.OrderBy(s => s.Id)
-                .Select(relationship => relationship.IsTrue
-                    ? relationship.TypeTask.IsTrue(contractItem.Id, requestSchemaDto)
-                    : !relationship.TypeTask.IsTrue(contractItem.Id, requestSchemaDto))
+            contractItem.OperandTasks
+                .Select(x => x.TypeTask.IsTrue(contractItem.Id, requestSchemaDto))
                 .All(allIsTrue => allIsTrue);
 
-        public static bool IsTrue(this TypeTask typeTask, int contractItemId ,RequestSchemaDto requestSchemaDto) =>
+        /// <summary>
+        /// Верно ли утверждение 
+        /// </summary>
+        /// <param name="typeTask"></param>
+        /// <param name="contractItemId"></param>
+        /// <param name="requestSchemaDto"></param>
+        /// <returns></returns>
+        private static bool IsTrue(this TypeTask typeTask, int contractItemId, RequestSchemaDto requestSchemaDto) =>
             requestSchemaDto.Conditions.Exists(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
-            && typeTask.OperandTasks.Where(x => x.ContractItemId == contractItemId).Any(x => x.Value.ToUpper() == requestSchemaDto
-                                                  .Conditions
-                                                  .Single(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
-                                                  .Value.ToUpper());
+            && typeTask.OperandTasks.Where(x => x.ContractItemId == contractItemId)
+                .Any(x => x.Value.ToUpper() == requestSchemaDto
+                              .Conditions
+                              .Single(s => string.Equals(s.Key.ToUpper(), typeTask.Name.ToUpper()))
+                              .Value.ToUpper());
     }
 }
